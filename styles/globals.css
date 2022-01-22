@@ -18,3 +18,11 @@ a {
 * {
   box-sizing: border-box;
 }
+
+.sbui-btn-primary {
+  @apply text-white bg-indigo-500 !important;
+}
+
+.sbui-typography-link {
+  @apply text-indigo-500 !important;
+}

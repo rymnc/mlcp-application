@@ -3,6 +3,7 @@ import type { AppProps } from 'next/app'
 import { useState, useEffect } from 'react'
 import { supabase } from '../supabase'
 import { User } from '@supabase/supabase-js';
+import Layout from '../components/Layout';
 
 function MyApp({ Component, pageProps }: AppProps) {
   const [user, setUser] = useState<User | null>(null);
@@ -19,7 +20,11 @@ function MyApp({ Component, pageProps }: AppProps) {
     const user = supabase.auth.user()
     setUser(user)
   }
-  return <Component {...pageProps} />
+  return (
+    <Layout>
+      <Component {...pageProps} />
+    </Layout>
+  )
 }
 
 export default MyApp
