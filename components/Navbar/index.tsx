@@ -14,12 +14,7 @@ interface Route {
 
 type Routes = Route[];
 
-const navigation: Routes = [
-  { name: "Dashboard", href: "#", current: true },
-  { name: "Team", href: "#", current: false },
-  { name: "Projects", href: "#", current: false },
-  { name: "Calendar", href: "#", current: false },
-];
+
 
 function classNames(...classes: any[]) {
   return classes.filter(Boolean).join(" ");
@@ -30,10 +25,17 @@ const Home: NextPage = () => {
 
   const [componentUser, setComponentUser] = useState(user)
 
+  const navigation: Routes = [
+    { name: "Home", href: "/", current: true },
+    { name: "My Parking Spaces", href: componentUser ? '/my-spaces' : '/auth', current: false },
+    { name: "New Booking", href: componentUser ? '/my-spaces' : '/auth', current: false },
+  ];
+
   useEffect(() => {
     setComponentUser(user)
     console.log(user)
   }, [user])
+
   return (
     <Disclosure as="nav" className="bg-gray-800">
       {({ open }) => (
@@ -158,7 +160,7 @@ const Home: NextPage = () => {
                                 "block px-4 py-2 text-sm text-gray-700"
                               )}
                             >
-                              Sign up/Sign in
+                              Sign up / Sign in
                             </a>
                           )}
                         </Menu.Item>
