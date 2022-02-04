@@ -1,30 +1,17 @@
-import '../styles/globals.css'
-import type { AppProps } from 'next/app'
-import { useState, useEffect } from 'react'
-import { supabase } from '../supabase'
-import { User } from '@supabase/supabase-js';
-import Layout from '../components/Layout';
+import "../styles/globals.css";
+import type { AppProps } from "next/app";
+import { Auth } from "@supabase/ui";
+import Layout from "../components/Layout";
+import { supabase } from "../supabase";
 
 function MyApp({ Component, pageProps }: AppProps) {
-  const [user, setUser] = useState<User | null>(null);
-  useEffect(() => {
-    const { data: authListener } = supabase.auth.onAuthStateChange(
-      async () => checkUser()
-    )
-    checkUser()
-    return () => {
-      authListener?.unsubscribe()
-    };
-  }, [])
-  async function checkUser() {
-    const user = supabase.auth.user()
-    setUser(user)
-  }
   return (
-    <Layout>
-      <Component {...pageProps} />
-    </Layout>
-  )
+    <Auth.UserContextProvider supabaseClient={supabase}>
+      <Layout>
+        <Component {...pageProps} />
+      </Layout>
+    </Auth.UserContextProvider>
+  );
 }
 
-export default MyApp
+export default MyApp;

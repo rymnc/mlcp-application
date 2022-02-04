@@ -1,8 +1,8 @@
 import { Auth, Typography, Button } from "@supabase/ui";
 const { Text } = Typography;
 import type { NextComponentType } from "next";
-import { supabase } from "../../supabase";
-
+import {supabase} from '../../supabase'
+ 
 function Profile(props: any) {
   const { user } = Auth.useUser();
   if (user)
@@ -19,11 +19,9 @@ function Profile(props: any) {
 
 const AuthProfile: NextComponentType = () => {
   return (
-    <Auth.UserContextProvider supabaseClient={supabase}>
       <Profile supabaseClient={supabase}>
-            <Auth supabaseClient={supabase} />
+        <Auth supabaseClient={supabase} />
       </Profile>
-    </Auth.UserContextProvider>
   );
 };
 
