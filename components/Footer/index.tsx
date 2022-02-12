@@ -42,7 +42,6 @@ const Footer: NextComponentType = () => {
                     <li className="mt-6 lg:mt-0 md:mt-0 xl:mt-0 2xl:mt-0 sm:mt-0">
                       <Link href="/privacypolicy">
                         <a
-                          href="/privacypolicy"
                           className="text-xs lg:text-sm leading-none hover:text-brand dark:hover:text-brand text-gray-800 dark:text-gray-50"
                         >
                           Privacy policy
