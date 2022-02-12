@@ -8,14 +8,14 @@ type Props = {
 
 const Layout = ({ children }: Props) => {
   return (
-    <>
+    <div className="bg-gray-800">
       <Meta />
       <div className="min-h-screen">
         <Navbar />
         <main>{children}</main>
       </div>
       <Footer />
-    </>
+    </div>
   );
 };
 
