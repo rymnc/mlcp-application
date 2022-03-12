@@ -2,9 +2,11 @@
 import type { NextPage } from "next";
 import { Auth } from "@supabase/ui";
 
-import { Fragment, useEffect, useState } from "react";
+import { Fragment, useEffect, useMemo, useState } from "react";
 import { Disclosure, Menu, Transition } from "@headlessui/react";
 import { UserIcon, MenuIcon, XIcon } from "@heroicons/react/outline";
+import { supabase } from "../../supabase";
+import Router from 'next/router'
 
 interface Route {
   name: string;
@@ -24,17 +26,25 @@ const Home: NextPage = () => {
   const { user } = Auth.useUser();
 
   const [componentUser, setComponentUser] = useState(user)
-
-  const navigation: Routes = [
+  const baseNav: Routes = useMemo(() => [
     { name: "Home", href: "/", current: true },
-    { name: "My Parking Spaces", href: componentUser ? '/my-spaces' : '/auth', current: false },
-    { name: "New Booking", href: componentUser ? '/my-spaces' : '/auth', current: false },
-  ];
+    { name: "My Parking Spaces", href: '/auth', current: false },
+    { name: "New Booking", href: '/auth', current: false },
+  ], [])
+  const [navigation, setNavigation] = useState<Routes>(baseNav);
 
   useEffect(() => {
     setComponentUser(user)
-    console.log(user)
-  }, [user])
+    if(user) {
+      setNavigation([
+        { name: "Home", href: "/", current: true },
+        { name: "My Parking Spaces", href: '/my-spaces', current: false },
+        { name: "New Booking", href: '/new-booking', current: false },
+      ])
+    } else {
+      setNavigation([...baseNav])
+    }
+  }, [user, baseNav])
 
   return (
     <Disclosure as="nav" className="bg-gray-800">
@@ -138,11 +148,19 @@ const Home: NextPage = () => {
                         <Menu.Item>
                           {({ active }) => (
                             <a
-                              href="#"
                               className={classNames(
                                 active ? "bg-gray-100" : "",
-                                "block px-4 py-2 text-sm text-gray-700"
+                                "block px-4 py-2 text-sm text-gray-700 w-100 cursor-pointer"
                               )}
+                              onClick={() => {
+                                try {
+                                  supabase.auth.signOut()
+                                  setComponentUser(null)
+                                  Router.push('/')
+                                } catch (e) {
+                                  console.error('Error signing out', e)
+                                }
+                              }}
                             >
                               Sign out
                             </a>
