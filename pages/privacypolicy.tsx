@@ -2,7 +2,7 @@ import type { NextPage } from "next";
 
 
 const PrivacyPolicy: NextPage = () => {
-  return <div className='grid place-items-center bg-gray-800'>
+  return <div className='grid place-items-center'>
     <div className='container sm:max-w-sm md:max-w-sm max-w-lg lg:max-w-lg xl:max-w-xl 2xl:max-w-xl px-2 '>
       <h1 className="prose dark:prose-invert prose-2xl prose-stone">Privacy Policy</h1>
       <p className='prose dark:prose-invert'>Last updated: February 12, 2022</p>
