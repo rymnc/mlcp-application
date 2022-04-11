@@ -1,0 +1,43 @@
+name: "Main workflow"
+
+on:
+  push:
+    paths:
+      - "models/**"
+    branches:
+      - main
+
+jobs:
+  migrate:
+    name: Install migra
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:latest
+        env:
+          POSTGRES_DB: postgres_db
+          POSTGRES_PASSWORD: postgres_password
+          POSTGRES_PORT: 5432
+          POSTGRES_USER: postgres_user
+        ports:
+          - 5432:5432
+    - steps:
+      - run: pip install migra
+      - name: Install PostgreSQL client
+        run: |
+          apt-get update
+          apt-get install --yes postgresql-client
+      - name: Run up.sql on PostgreSQL
+        run: psql -h postgres -d postgres_db -U postgres_user -f up.sql
+        env:
+          PGPASSWORD: postgres_password
+
+      - run: |
+          migra \
+          postgresql://postgres_user:postgres_password@postgres:5432/postgres_db \
+          ${{ secrets.remote_database_url }} \
+          > migration_script.sql
+      - name: Run migration script
+        run: psql -Atx ${{ secrets.remote_database_url }} -1 -f migration_script.sql
+
+
