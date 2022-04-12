@@ -7,26 +7,43 @@ type Data = {
     error?: string;
 };
 
-const getSlotsGenerator = (client: typeof supabase) => {
-    return async () => {
-        const { data, error } = await client.from('Service')
-            .select('carParkLimitPerHour, slug')
-            .eq('slug', 'parkingSlot');
+const getBookingDetailGenerator = (client: typeof supabase) => {
+    return async (checkinId: number, userId: number) => {
+        const { data, error } = await client
+            .from('UserCheckinService')
+            .select(`
+                uuid,
+                expectedCheckinTime,
+                expectCheckoutTime,
+                actualCheckinTime,
+                actualCheckoutTime,
+                enabled,
+                userCheckinServices:UserCheckinService(
+                    id,
+                    service:Service(
+                        name,
+                        description,
+                        slug
+                    )
+                )
+            `)
+            .eq('uuid', userId)
+            .eq('UserCheckinService.id', checkinId);
         if (error) {
-            throw new Error('Could not fetch parking slot data');
+            throw new Error('Could not fetch specific booking details!')
         }
         return data;
     }
 }
 
-const getSlots = getSlotsGenerator(supabase);
+const getBooking = getBookingDetailGenerator(supabase);
 
 export default async function handler(
-    _req: NextApiRequest,
+    req: NextApiRequest,
     res: NextApiResponse<Data>
 ) {
     try {
-        const slots = await getSlots();
+        const slots = await getBooking(req.body.checkinId, req.body.userId);
         return res.status(200).json({
             slots: slots[0].carParkLimitPerHour,
         })

@@ -7,19 +7,30 @@ type Data = {
     error?: string;
 };
 
-const getSlotsGenerator = (client: typeof supabase) => {
+const getAddonsGenerator = (client: typeof supabase) => {
     return async () => {
-        const { data, error } = await client.from('Service')
-            .select('carParkLimitPerHour, slug')
-            .eq('slug', 'parkingSlot');
+        const { data, error } = await client
+            .from('Service')
+            .select(`
+            name,
+            description,
+            timeRequired,
+            cost,
+            carParkLimitPerHour,
+            enabled,
+            slug
+        `)
+            .neq('slug', 'parkingSlot')
+            .eq('enabled', true)
+            .gt('carParkLimitPerHour', 0);
         if (error) {
-            throw new Error('Could not fetch parking slot data');
+            throw new Error('Could not fetch add-on data');
         }
         return data;
     }
 }
 
-const getSlots = getSlotsGenerator(supabase);
+const getSlots = getAddonsGenerator(supabase);
 
 export default async function handler(
     _req: NextApiRequest,
